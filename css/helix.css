@@ -1,0 +1,96 @@
+.panel-right{
+    background: #0d4f81;
+}
+
+.panel-right a{
+    color: #fff;
+    margin: 3px;
+    text-align: left;
+    border: none;
+}
+
+.panel-right li:hover a{
+    color: #007aff;
+    text-decoration: underline;
+    margin: 3px;
+}
+
+.panel-right ul{
+    margin: 0px;
+    list-style: none;
+    padding: 0px;
+}
+
+.panel-right li{
+    margin: 0px;
+    list-style: none;
+}
+
+
+
+#login-submit{
+    padding: 0 15px;
+    text-align: center;
+    color: #007aff;
+    display: block;
+    line-height: 43px;
+    margin: auto;
+    border: none;
+    background: none;
+    font-size: 18;
+    width: 100%;
+}
+
+/*.floating-label{
+    position: absolute;
+}
+
+.form-group{
+    display: flex;
+}*/
+
+#loginpage .item-media .fa{
+    font-size: 30px;
+}
+
+/*
+.form-group.focus-state .floating-label{
+    opacity: 1;
+    transform: scale(0.75) translate3d(-25px,-25px,0);
+}
+
+.list-block .form-group.not-empty-state .floating-label{
+    opacity: 1;
+    transform: scale(0.75) translate3d(-25px,-25px,0);
+}*/
+
+/*.list-block .label, .list-block .floating-label*/
+
+/*
+.form-control{
+    align-self: flex-end;
+}
+
+.form-control::webkit-input-placeholder{
+    color: transparent;
+    transition: 240ms;
+}
+
+.form-control.focus-state::webkit-input-placeholder{
+    transition: none;
+}
+
+.form-group.focus-state .form-control::webkit-input-placeholder{
+    color: #bbb;
+}
+*/
+
+/*.form-group{
+    display: flex;
+    height: 55px;
+}
+
+
+*/
+
+

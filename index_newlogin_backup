@@ -1,0 +1,193 @@
+<html class="pixel-ratio-1 watch-active-state">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">	
+    <title>Helix</title>
+    <link rel="stylesheet" href="css/framework7.ios.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.css">
+    <!--<link rel="stylesheet" href="css/framework7.material.css">-->
+    <!--<link rel="stylesheet" href="css/framework7.material.colors.css">-->
+    <link rel="stylesheet" href="css/kitchen-sink.css">
+    <!--<link rel="stylesheet" href="css/kitchen-sink-material.css">-->
+    <link rel="stylesheet" href="css/helix.css">
+    <link rel="icon" href="img/logo1.png">
+    <link rel="apple-touch-icon" href="img/icon.png">
+    <link rel="stylesheet" type="text/css" href="css/icomoon.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+    <script type="text/javascript">
+            function verify(){
+                
+                var $$ = Dom7;
+                
+                /*$$.post('http://192.168.254.103:8080/helixapp/infolist', null, function(data){
+                    var returnText = JSON.parse(data);
+                    if(returnText.username){
+                        window.location.href = "http://192.168.254.103:8080/helixapp/main.html";
+                    }
+                });*/
+                
+                /*
+                var info_myAjax = new Ext.data.Connection({});
+                info_myAjax.request( {
+                    url: './infolist',
+                    method: 'POST',
+                    success: function(response,eOpts) {
+                        var returnText = Ext.decode(response.responseText);
+                        if(returnText.username){
+                            window.location.href = "./main.html";
+                        }
+                    }
+                });
+                var val = Ext.util.Cookies.get('rem_user');
+                if (val != null) {
+                    document.getElementById('username').value = val;
+                    var rem_me = document.getElementsByName('remember_me');
+                    rem_me[0].checked = true;
+                    document.getElementById('username').onblur();
+                }
+                */
+            }
+        </script>
+</head>
+<body onload="verify();">
+    <script>
+        function validate(){
+            companyidval = document.getElementById('companyid').value.replace(/[<]/g,'&lt').replace(/[>]/,'&gt');
+            document.getElementById('companyid').value = companyidval;
+            var rem_me = document.getElementsByName('remember_me');  
+            if(!document.getElementById('clientid').value || !document.getElementById('companyid').value){
+                document.getElementById('feedbackMsg').innerHTML = "Client/Company is required! Click Show more options to edit";
+                document.getElementById('feedbackContainerTr').style.display = "table-row";
+                return false;
+            }else{
+                Ext.util.Cookies.set('helix_clientid', document.getElementById('clientid').value);
+                Ext.util.Cookies.set('helix_companyid', document.getElementById('companyid').value);
+                document.getElementById('feedbackMsg').innerHTML = "";
+                document.getElementById('feedbackContainerTr').style.display = "none";
+            }
+
+            if(document.getElementById('username').value && document.getElementById('password').value ){
+                if (rem_me[0].checked) {
+                    Ext.util.Cookies.set('rem_user', document.getElementById('username').value);
+                } else {
+                    Ext.util.Cookies.clear("rem_user");
+                }
+                return true;
+            }else{
+                return false;
+            }
+			
+			var url = "http://192.168.254.103:8080/helixapp/main.html";
+			
+			var link=$("<a href='" +url+ "'></a>");
+			$("body").append(link);
+			link.get(0).click();
+			
+        }
+		
+		function doThis(){
+			/*alert("test");*/
+			/*companyidval = document.getElementById('companyid').value.replace(/[<]/g,'&lt').replace(/[>]/,'&gt');
+            document.getElementById('companyid').value = companyidval;
+            var rem_me = document.getElementsByName('remember_me');  
+            if(!document.getElementById('clientid').value || !document.getElementById('companyid').value){
+                document.getElementById('feedbackMsg').innerHTML = "Client/Company is required! Click Show more options to edit";
+                document.getElementById('feedbackContainerTr').style.display = "table-row";
+				alert("Client/Company is required! Click Show more options to edit");
+				return false;
+            }else{
+                Ext.util.Cookies.set('helix_clientid', document.getElementById('clientid').value);
+                Ext.util.Cookies.set('helix_companyid', document.getElementById('companyid').value);
+                document.getElementById('feedbackMsg').innerHTML = "";
+                document.getElementById('feedbackContainerTr').style.display = "none";
+            }
+
+            if(document.getElementById('username').value && document.getElementById('password').value ){
+                if (rem_me[0].checked) {
+                    Ext.util.Cookies.set('rem_user', document.getElementById('username').value);
+                } else {
+                    Ext.util.Cookies.clear("rem_user");
+                }
+                /*return true;*/
+            /*}else{
+				alert("Username and password are required!");
+                return false;
+            }*/
+			
+			/*var url = "http://192.168.254.103:8080/helixapp/main.html";
+			var link=$("<a href='" +url+ "'></a>");
+			$("body").append(link);
+			link.get(0).click();*/
+			
+			/*window.location.href = "http://192.168.254.103:8080/helixapp/main.html";*/
+			
+			mainView.router.loadPage({url:'http://192.168.254.103:8080/helixapp/main.html', ignoreCache:true, reload:true })
+		}
+		
+    </script>
+	<div class="views">
+		<div class="view view-main">
+		<div class="page-content login-screen-content">
+		  <div class="login-screen-title">Helix Login</div>
+		  
+		  <form action="http://192.168.254.103:8080/helixapp/main.html" method="POST" id="form-login">
+			<div class="list-block loginpage">
+			  <ul>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-tag"></i></div>  
+				  <div class="item-inner form-group">
+					<label class="floating-label">Client Code</label>
+					<!--<div class="item-input">-->
+					  <input type="text" name="clientid" class="form-control" placeholder="Client Code"/>
+					<!--</div>-->
+				  </div>
+				</li>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-industry"></i></div>  
+				  <div class="item-inner form-group">
+					<label class="floating-label">Company</label>
+					<!--<div class="item-input item-input-field">-->
+					  <input type="text" name="companyid" class="form-control" placeholder="Company"/>
+					<!--</div>-->
+				  </div>
+				</li>
+				<li class="item-content">
+				  <div class="item-media"><i class="icon fa fa-user"></i></div>  
+				  <div class="item-inner form-group"> 
+					<label class="floating-label">Username</label>
+					<!--<div class="item-input item-input-field">-->
+					  <input type="text" name="username" class="form-control" placeholder="Username"/>
+					<!--</div>-->
+				  </div>
+				</li>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-key"></i></div>  
+					<div class="item-inner form-group">
+					  <label class="floating-label">Password</label>
+					  <!--<div class="item-input-field">-->
+						<input type="password" name="password" class="form-control" placeholder="Password"/>
+					  <!--</div>-->
+					</div>
+				</li>
+				
+			  </ul>
+			</div>
+			<div class="list-block">
+			  <ul>
+				  <li><input type="button" id="login-submit" value="Sign In" onclick="doThis();"/></li>
+			  </ul>
+			  <!--<div class="list-block-label">Some text about login information.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>-->
+			</div>
+		  </form>
+		</div>
+	</div>
+	</div>
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/kitchen-sink.js"></script>
+<script type="text/javascript" src="js/my-app.js"></script>
+<!--<script type="text/javascript" src="js/kitchen-sink-material.js"></script>-->
+
+</body></html>

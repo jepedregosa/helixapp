@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Helix Mobile</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/helix.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+    <link rel="stylesheet" type="text/css" href="css/icomoon.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+  </head>
+  <body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p>Left panel content goes here</p>
+      </div>
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">
+      <div class="content-block">
+        <ul>
+            <li><a href="#" class="button button-big " style="margin-left:0px;"><span class="fa fa-gears"></span> Profile Settings</a></li>
+            <li><a href="#" class="button button-big " style="margin-left:0px;"><span class="fa fa-key"></span> Change Password</a></li>
+            <li><a href="#" class="button button-big " style="margin-left:0px;" onclick="doLogout();"><span class="fa fa-power-off"></span> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="center sliding">Helix Login</div>
+            <!--<div class="right"><a href="#" class="link icon-only open-panel" data-panel="right"> <i class="icon icon-bars"></i></a>
+            </div>-->
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Index Page-->
+          <div data-page="index" class="page">
+            <div class="page-content">
+              <!--<div class="content-block-title">Helix Login</div>-->
+		  <form id="form-login">
+			<div class="list-block loginpage">
+			  <ul>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-tag"></i></div>  
+					<div class="item-inner">
+						<div class="item-title label">Client Code</div>
+						<div class="item-input item-input-field">
+							<input type="text" name="clientid" class="form-control" placeholder="Client Code"/>
+						</div>
+					</div>
+				</li>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-industry"></i></div>  
+				  <div class="item-inner form-group">
+					<div class="item-title label">Company</div>
+					<div class="item-input item-input-field">
+					  <input type="text" name="companyid" class="form-control" placeholder="Company"/>
+					</div>
+				  </div>
+				</li>
+				<li class="item-content">
+				  <div class="item-media"><i class="icon fa fa-user"></i></div>  
+				  <div class="item-inner form-group"> 
+					<div class="item-title label">Username</div>
+					<div class="item-input item-input-field">
+					  <input type="text" name="username" class="form-control" placeholder="Username"/>
+					</div>
+				  </div>
+				</li>
+				<li class="item-content">
+					<div class="item-media"><i class="icon fa fa-key"></i></div>  
+					<div class="item-inner form-group">
+					  <div class="item-title label">Password</div>
+					  <div class="item-input item-input-field">
+						<input type="password" name="password" class="form-control" placeholder="Password"/>
+					  </div>
+					</div>
+				</li>
+				
+			  </ul>
+			</div>
+			<div class="list-block">
+			  <ul>
+				  <li><input type="button" id="login-submit" value="Sign In" onclick="validate()"/></li>
+			  </ul>
+			  <!--<div class="list-block-label">Some text about login information.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>-->
+			</div>
+		  </form>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom Toolbar-->
+        <div class="toolbar">
+          <div class="toolbar-inner">
+			<!--<a href="#" class="link">Link 1</a><a href="#" class="link">Link 2</a>-->
+		  </div>
+        </div>
+      </div>
+    </div>
+    <!-- Template7 templates-->
+    <script type="text/template7" id="about">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="left sliding"><a href="#" class="back link"> <i class="icon icon-back "></i><span>Back</span></a></div>
+          <div class="center sliding">About Me</div>
+          <div class="right"><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a></div>
+        </div>
+      </div>
+      <div class="pages">
+        <div data-page="about" class="page">
+          <div class="page-content">
+            <div class="content-block">
+              <div class="content-block-inner">
+                <p>Hello, my name is {{name}}. I am {{age}} years old and i am working as {{position}} at {{company}}.</p>
+                <p>I have a lot of interests: {{#if interests}}{{join interests delimeter=", "}}{{/if}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="js/my-app.js"></script>
+  </body>
+</html>
