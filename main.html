@@ -51,25 +51,63 @@
         <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
         <div class="pages navbar-through toolbar-through">
           <!-- Index Page-->
-          <div data-page="index" class="page">
+          <div class="page">
             <div class="page-content">
-              <div class="content-block-title">Welcome To Helix</div>
+             <!-- <div class="content-block-title">Welcome To Helix</div>
               <div class="content-block">
                 <div class="content-block-inner">
-					<!--<p>Approval Process</p>-->
-					<p>Hello, my name is {{name}}. I am {{age}} years old and i am working as {{position}} at {{company}}.</p>
-					<p>I have a lot of interests: {{#if interests}}{{join interests delimeter=", "}}{{/if}}</p>
+					<p>Approval Process</p>-->
+					<!--<div>
+						<p>Welcome to Helix App Approval {{url_query.username}}!</p>
+					</div>
                 </div>
-              </div>
+              </div>-->
               <div class="list-block">
                 <ul>
-                  <li><a href="#" data-template="about" data-context-name="about" class="item-link item-content">
+					<li><a href="#" class="item-link item-content" onclick="requisitionlist()">
                       <div class="item-inner"> 
-                        <div class="item-title">About Me</div>
+                        <div class="item-title">Requisition</div>
                       </div></a></li>
-                  <li><a href="projects.html" class="item-link item-content">
+					<li><a href="#" class="item-link item-content" onclick="procurementlist()">
                       <div class="item-inner"> 
-                        <div class="item-title">My Projects</div>
+                        <div class="item-title">Purchase Order</div>
+                      </div></a></li>					  
+                  <li><a href="#" class="item-link item-content" onclick="voucherlist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Voucher</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="paymentlist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Payment</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="goodsreceiptlist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Goods Receipt</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="journallist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Journal</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="salesorderlist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Sales Order</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="deliverylist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Delivery</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="saleslist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Sales</div>
+                      </div></a></li>
+				  <li><a href="#" class="item-link item-content" onclick="receiptlist()">
+                      <div class="item-inner"> 
+                        <div class="item-title">Receipt</div>
+                      </div></a></li>
+				<!--		
+				  <li><a href="#" data-template="about" data-context-name="about" class="item-link item-content" >
+                      <div class="item-inner"> 
+                        <div class="item-title">About</div>
                       </div></a></li>
                   <li><a href="cars.html" data-context-name="cars" class="item-link item-content">
                       <div class="item-inner">
@@ -78,22 +116,23 @@
                   <li><a href="contacts.html" class="item-link item-content">
                       <div class="item-inner">
                         <div class="item-title">Contacts</div>
-                      </div></a></li>
+                      </div></a></li>-->
                 </ul>
               </div>
-              <div class="content-block-title">Side panels</div>
+              <!--<div class="content-block-title">Side panels</div>
               <div class="content-block">
                 <div class="row">
                   <div class="col-50"><a href="#" data-panel="left" class="button open-panel">Left Panel</a></div>
                   <div class="col-50"><a href="#" data-panel="right" class="button open-panel">Right Panel</a></div>
                 </div>
               </div>
+			  -->
             </div>
           </div>
         </div>
         <!-- Bottom Toolbar-->
         <div class="toolbar">
-          <div class="toolbar-inner"><a href="#" class="link">Link 1</a><a href="#" class="link">Link 2</a></div>
+          <!--<div class="toolbar-inner"><a href="#" class="link">Link 1</a><a href="#" class="link">Link 2</a></div>-->
         </div>
       </div>
     </div>
@@ -119,6 +158,9 @@
         </div>
       </div>
     </script>
+	<!--<script type="text/template7" id="maincontent">
+		Welcome to Helix App Approval {{url_query.username}}!
+	</script>-->
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="js/framework7.min.js"></script>
     <!-- Path to your app js-->
