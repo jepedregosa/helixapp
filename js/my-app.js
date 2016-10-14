@@ -1,4 +1,5 @@
 var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
+//var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
 var USERNAME;
 
 // Let's register Template7 helper so we can pass json string in links
@@ -67,7 +68,7 @@ var myApp = new Framework7({
                 color: 'red',
                 year: 2014,
                 description: ''
-            },
+            }
         ],
 
         // Another plain data object, used in "about" link in data-contextName object 
@@ -78,7 +79,8 @@ var myApp = new Framework7({
             company: 'Google',
             interests: ['swimming', 'music', 'JavaScript', 'iMac', 'iOS apps', 'sport']
         }
-    }
+    },
+	showToolbar: false
 });
 
 function numberWithCommas(x) {
@@ -92,6 +94,7 @@ var $$ = Dom7;
 var mainView = myApp.addView('.view-main', {
     // Enable dynamic Navbar
     dynamicNavbar: true,
+	showToolbar: false
 });
 
 function doLogout(){
@@ -205,6 +208,8 @@ function requisitionlist(){
 
 function requisitiondetaillist(obj){
 	//myApp.alert(obj.title, 'Debug');
+	//		url: SERVER_ADDRESS + "/tranlist?module=requisition&option=detail&SeqID="+obj.title,
+
 	$$.ajax({
 		url: SERVER_ADDRESS + "/tranlist?module=requisition&limitindex=0&limitcount=100&SeqID="+obj.title,
 		contentType: 'jsonp',
@@ -213,21 +218,32 @@ function requisitiondetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=requisition&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
 		}
 	});
 }
+
 function procurementlist(){
 	$$.ajax({
 		url: SERVER_ADDRESS + "/tranlist?module=procurement&limitindex=0&limitcount=100",
@@ -260,15 +276,25 @@ function procurementdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/procurement/procurementdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=procurement&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/procurement/procurementdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -307,15 +333,25 @@ function voucherdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/voucher/voucherdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=voucher&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/voucher/voucherdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -355,15 +391,25 @@ function paymentdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/payment/paymentdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=payment&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/payment/paymentdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -403,15 +449,25 @@ function goodsreceiptdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/goodsreceipt/goodsreceiptdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=goodsreceipt&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/goodsreceipt/goodsreceiptdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -451,15 +507,25 @@ function journaldetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/journal/journaldetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=journal&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/journal/journaldetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -499,15 +565,25 @@ function salesorderdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/salesorder/salesorderdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=salesorder&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/salesorder/salesorderdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -547,15 +623,25 @@ function deliverydetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/delivery/deliverydetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=delivery&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/delivery/deliverydetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -595,15 +681,25 @@ function salesdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/sales/salesdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=sales&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/sales/salesdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -643,15 +739,26 @@ function receiptdetaillist(obj){
 		dataType : 'jsonp',
 		crossDomain: true,
 		success: function( response ) {
-			//myApp.alert(response, 'Debug');
-			mainView.router.loadPage({url:'./modules/receipt/receiptdetail.html', ignoreCache:true,
-				context:{
-					forapproval: JSON.parse(response),
-					username: sessionStorage.getItem("username")
-				}
-			});
-			
-			
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=receipt&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					/*myApp.alert(response2, 'Debug');*/
+					mainView.router.loadPage({url:'./modules/receipt/receiptdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
 		},
 		failure: function(){
 			myApp.alert('Failed to load approval list detail', 'Error');
@@ -676,8 +783,12 @@ function toggleactionbuttons(obj, action){
 	
 	if(action){
 		if(action=="Approve"){
+			/*for(var data; $$('.dataToBePassed')){
+				var SeqID = data.id;
+				myApp.alert(SeqID + " has been approved!", 'Test');
+			}*/
 			var SeqID = $$('.dataToBePassed')[0].id;
-			myApp.alert(SeqID + " has been approved!", 'Test');
+			myApp.alert(SeqID + " has been rejected!", 'Test');
 		}
 		if(action=="Reject"){
 			var SeqID = $$('.dataToBePassed')[0].id;
@@ -689,7 +800,4 @@ function toggleactionbuttons(obj, action){
 		}
 		//myApp.alert(action, 'Test');
 	}
-}	
-	
-
-
+}

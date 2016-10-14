@@ -26,6 +26,14 @@
     list-style: none;
 }
 
+.tranIDMaster{
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.vendorNameMaster, .amountMaster{
+	font-size: 18px;
+}
 
 
 #login-submit{

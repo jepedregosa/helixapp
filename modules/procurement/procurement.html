@@ -3,14 +3,27 @@
   <div class="navbar-inner">
     <div class="left sliding"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
     <div class="center sliding">Procurement</div>
-    <div class="right"><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a></div>
+    <div class="right"><a href="#" class="link icon-only open-panel" data-panel="right"><i class="icon fa fa-gear"></i></a></div>
   </div>
 </div>
 <div class="pages">
   <div data-page="forapproval" class="page">
+	<form data-search-list=".list-block-search" data-search-in=".item-title, .vendorNameMaster, .amountMaster, .item-subtitle" class="searchbar searchbar-init">
+		<div class="searchbar-input">
+		  <input type="search" placeholder="Search"><!--<a href="#" class="searchbar-clear"></a>-->
+		</div>
+		<a href="#" class="searchbar-cancel"><i class="icon fa fa-remove"></i></a>
+	</form>
+	
+	<!-- Search Bar overlay -->
+	 <div class="searchbar-overlay"></div>
     <div class="page-content">
-      <!-- <div class="content-block-title">Voucher Approval List</div>-->
-      <div class="list-block media-list">
+      <!-- This block will be displayed if nothing found -->
+	  <div class="content-block searchbar-not-found">
+		<div class="content-block-inner">Nothing found</div>
+	  </div>
+	  
+      <div class="list-block list-block-search searchbar-found media-list">
         <ul>
 		 <!--  <li class="item-content">
             <div class="item-inner"> -->
@@ -23,18 +36,14 @@
           </li>	-->
 		{{#each forapproval}}
           <li class="item-content">
-            <div class="item-inner">
-				<a title={{SeqID}} href="#" class="item-content item-link" style="padding: 0px; margin: 0px;" data-context-name="forapproval.{{@index}}" onclick="procurementdetaillist(this)">
+            <div title={{SeqID}} class="item-inner" onclick="procurementdetaillist(this)">
 				<div class="item-media">
-					<div class="item-title" style="font-size: 23px;">{{TranID}}</div>
+					<div class="item-title tranIDMaster">{{TranID}}</div>
 				</div>
-				<div class="item-after">
-					<b><span style="font-size: 33px;">{{CurCode}} {{DocAmount}}</span></b>
-				</div>	
-				</a>
 				<div class="item-title-row">
-					<div class="item-subtitle" style="font-size: 23px;">{{VendorName}}</div>
+					<div class="vendorNameMaster">{{VendorName}}</div>
 				</div>
+				<div class="amountMaster">{{CurCode}} {{DocAmount}}</div>
 				<div class="item-subtitle">{{TranDate}}</div>
 				<div class="item-subtitle">{{Memo}}</div>	
 				<!--<span class="badge">Vendor: {{VendorName}}</span>-->
