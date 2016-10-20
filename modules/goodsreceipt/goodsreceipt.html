@@ -6,35 +6,9 @@
     <div class="right"><a href="#" class="link icon-only open-panel" data-panel="right"><i class="icon fa fa-gear"></i></a></div>
   </div>
 </div>
-<!-- Speed Dial Wrap -->
-  <div class="speed-dial">
-	<!-- FAB inside will open Speed Dial actions -->
-	<a href="#" class="floating-button" onclick="toggleactionbuttons(this,'')">
-	  <!-- First icon is visible when Speed Dial actions are closed -->
-	  <i class="icon fa fa-plus"></i>
-	  <!-- Second icon is visible when Speed Dial actions are opened -->
-	  <i class="icon fa fa-minus"></i>
-	</a>
-	<!-- Speed Dial Actions -->
-	<div class="speed-dial-buttons">
-	  <!-- First Speed Dial button -->
-	  <a href="#" title="Approve" onclick="toggleactionbuttons(this,'Approve')">
-		<i class="icon fa fa-check"></i>
-	  </a>
-	  <!-- Second Speed Dial  button -->
-	  <a href="#" title="Reject" onclick="toggleactionbuttons(this,'Reject')">
-		<i class="icon fa fa-remove"></i>
-	  </a>
-	  <!-- Third Speed Dial  button -->
-	  <a href="#" title="Return To Maker" onclick="toggleactionbuttons(this,'Return To Maker')">
-		<i class="icon fa fa-mail-reply"></i>
-	  </a>
-	</div>
-  </div>
-  <!-- End of Speed Dial -->
 <div class="pages">
-  <div data-page="forapproval" class="page">
-	<form data-search-list=".list-block-search" data-search-in=".item-title, .vendorNameMaster, .amountMaster, .item-subtitle" class="searchbar searchbar-init">
+  <div data-page="goodsreceipt" class="page">
+	<form data-search-list=".virtual-list" class="searchbar searchbar-init">
 		<div class="searchbar-input">
 		  <input type="search" placeholder="Search"><!--<a href="#" class="searchbar-clear"></a>-->
 		</div>
@@ -43,13 +17,21 @@
 	
 	<!-- Search Bar overlay -->
 	 <div class="searchbar-overlay"></div>
+	 
     <div class="page-content">
-      <!-- This block will be displayed if nothing found -->
+	  <!-- This block will be displayed if nothing found -->
 	  <div class="content-block searchbar-not-found">
 		<div class="content-block-inner">Nothing found</div>
 	  </div>
 	  
-      <div class="list-block list-block-search searchbar-found media-list">
+	  <div class="content-block">
+      </div>
+	  
+	  <!-- Virtual List -->
+		<div class="list-block list-block-search searchbar-found virtual-list media-list">
+		  <!-- keep it empty -->
+		</div>
+       <!--<div class="list-block list-block-search searchbar-found media-list">
 		
         
 		 <!--  <li class="item-content">
@@ -60,9 +42,9 @@
 				<div class="item-after">DocAmount <span class="badge">TranType</span></div>	
 				</div>		
 			</div>
-          </li>	-->
-		{{#each forapproval}}
-		<div class="list-group">
+          </li>
+		{{#each forapproval}}-->
+		 <!--<div class="list-group">
 			<ul>
 				<li class="list-group-title">{{TranDate}}</li>
 				<li class="item-content dataToBePassed" title={{SeqID}} onclick="goodsreceiptdetaillist(this)">
@@ -80,13 +62,13 @@
 						<div class="item-subtitle" style="display:none;">{{TranDate}}</div>
 						<div class="item-subtitle">{{Memo}}</div>	
 						<!--<span class="badge">Vendor: {{VendorName}}</span>-->
-					</div>
+					 <!--</div>
 					</label>
 				</li>
 			</ul>
 		</div>
         {{/each}}  
-      </div>
+      </div>-->
     </div>
   </div>
 </div>

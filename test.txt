@@ -1,0 +1,8 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [BatNbr]
+      ,[DocStatus]
+      ,[Details]
+      ,[SeqID]
+  FROM [demodb].[dbo].[procurement] where Details != ''
+
+UPDATE [demodb].[dbo].[procurement] SET DocStatus = 'DRAFT', Details='' WHERE SeqID in ('6289','6290','6291','6294','6297', '6295')

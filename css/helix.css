@@ -45,7 +45,7 @@
     margin: auto;
     border: none;
     background: none;
-    font-size: 18;
+    font-size: 1.2em;
     width: 100%;
 }
 
@@ -288,5 +288,14 @@ html:not(.watch-active-state) .speed-dial-buttons a:active,
   -webkit-transition-delay: 200ms;
   transition-delay: 200ms;
 }
-	
 
+.bigpreloader{
+  padding:5px;
+  text-align:center;
+}
+	
+.item-title.label{
+	vertical-align: top !important;
+	horizontal-align: top;
+}
+	
