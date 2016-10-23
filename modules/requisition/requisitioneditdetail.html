@@ -42,47 +42,46 @@
 						<div class="swipeout-content">
 							<div>
 								<div>
-									<span>Particulars</span>
+									<span>Transaction ID</span>
 									<div class="">
-										<textarea name="particulars" placeholder="Particulars" style="border: 1px solid #ccc; padding:5px;"></textarea>
+										<input type="text" name="TranID" placeholder="Transaction ID" style="border: 1px solid #ccc; padding:5px;" />
 									</div>
 								</div>
 							</div>
-							<!--<div class="item-content">
-								<div class="item-inner">
-								  <div class="item-title label">TranID</div>
-								  <div class="item-input">
-									<input type="text" name="tranID" placeholder="Your TranID">
-								  </div>
+							<div>
+								<div>
+									<span>Transaction Date</span>
+									<div class="">
+										<input type="date" name="TranDate" placeholder="Transaction Date" style="border: 1px solid #ccc; padding:5px;" />
+									</div>
 								</div>
-							</div>-->
+							</div>
+							<div>
+								<div>
+									<span>Details</span>
+									<div class="">
+										<textarea name="Details" placeholder="Details" style="border: 1px solid #ccc; padding:5px;"></textarea>
+									</div>
+								</div>
+							</div>
 							<div>
 								<div>
 								  <span>Required Date</span>
 								  <div>
-									<input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" name="reqdate" placeholder="Required Date" style="border: 1px solid #ccc;">
+									<input type="date"  name="RequiredDate" placeholder="Required Date" style="border: 1px solid #ccc;">
 								  </div>
 								</div>
 							</div>
-							<div class="item-content">
-								<div class="item-inner">
-									<div class="item-title label">Project</div>
-									<div class="item-input">
-										<input type="text" name="project" placeholder="Project">
-									</div>
-								</div>
+							<div style="display: none;">
+								<input type="text"  name="BatNbr">
 							</div>
-							<!--<div class="item-content">
-								<div class="item-inner">
-									<div class="item-title label">Status</div>
-									<div class="item-input">
-										<input type="text" name="status" placeholder="Your Status">
-									</div>
-								</div>
-							</div>-->
-							<div class="swipeout-actions-right">
-								<a href="#" onclick="editDetail();"><i class="icon icon-plus"></i></a>
-							</div>	
+							<div style="display: none;">
+								<input type="text"  name="TranType">
+							</div>
+							<div style="display: none;">
+								<input type="text"  name="SeqID">
+							</div>
+							
 						</div>
 					</li>
 				</ul>
@@ -95,24 +94,6 @@
 			<form id="requisitionDetailForm">
 			<div class="list-block virtual-list media-list"></div>
 
-			<!--<div class="list-block media-list">
-				<ul>
-					<li class="swipeout">
-						<!--<div class="item-media">{{TranID}}</div>-->
-						<!--<div class="swipeout-content item-content">
-							<div class="item-inner">
-							  <div class="item-title"><b>Particulars</b></div>	
-							  <div class="item-subtitle"><b>5 Lots X 5</b></div>
-							</div>
-							<div class="item-after">25</div>
-						</div>
-						<div class="swipeout-actions-right">
-							<a href="#" onclick="editDetail();"><i class="icon icon-pencil"></i></a>
-							<a href="#" onclick="alert('remove details');"><i class="icon icon-bin"></i></a>
-						</div>
-					</li>
-				</ul>
-			</div>-->
 			</form>	
          </div>
       </div>
