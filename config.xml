@@ -1,6 +1,6 @@
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.phonegap.helixapp" version="1.0.0">
-  <name>Helix App</name>
-  <description>Helix App</description>
+  <name>Helix Software</name>
+  <description>Helix Software</description>
   <author href="http://helixsoftware.ph" email="support@helixsoftware.ph">Helix Software</author>
   <content src="index.html"/>
   <preference name="DisallowOverscroll" value="true"/>
