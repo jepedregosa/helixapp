@@ -1,5 +1,5 @@
-var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
-//var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
+//var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
+var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
 var USERNAME;
 
 var TODAY = new Date();
