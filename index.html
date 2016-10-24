@@ -39,7 +39,13 @@
     <div class="views">
       <!-- Your main view, should have "view-main" class-->
       <div class="view view-main">
-        <!-- Top Navbar-->
+        
+		
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-fixed no-toolbar">
+          <!-- Index Page-->
+          <div data-page="index" class="page no-toolbar no-swipeback">
+		  <!-- Top Navbar-->
         <div class="navbar">
           <div class="navbar-inner">
             <!--<div class="center sliding">Helix Login</div>-->
@@ -47,11 +53,6 @@
             </div>-->
           </div>
         </div>
-		
-        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
-        <div class="pages navbar-fixed no-toolbar">
-          <!-- Index Page-->
-          <div data-page="index" class="page no-toolbar no-swipeback">
             <div class="page-content">
           <div class="content-block-title"><center><span style="font-size:2em; color:#000;">Helix Login</span></center></div>
 		  <form id="form-login" class="store-data">
