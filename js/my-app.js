@@ -1,5 +1,5 @@
-//var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
-var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
+var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
+//var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
 var USERNAME;
 
 var TODAY = new Date();
@@ -11,6 +11,7 @@ TODAY = yyyy + '-' + mm + '-' + dd;
 // Export selectors engine
 var $$ = Dom7;
 var virtualList;
+var curAction;
 
 // Let's register Template7 helper so we can pass json string in links
 Template7.registerHelper('json_stringify', function (context) {
@@ -80,7 +81,9 @@ $$(document).on('pageInit', function (e) {
 	   }catch(e){
 		   alert(e);
 	   }
-    }
+    }else{
+		$$('.speed-dial-opened').removeClass('speed-dial-opened');
+	}
 });
 
 // Initialize your app
@@ -101,7 +104,9 @@ var myApp = new Framework7({
     },
     onAjaxComplete: function (xhr){
         myApp.hideIndicator();
-    }
+    },
+	uniqueHistoryIgnoreGetParameters: true,
+	preloadPreviousPage: true
 });
 
 function validate(){
@@ -166,8 +171,10 @@ function numberWithCommas(x) {
 // Add main View
 var mainView = myApp.addView('.view-main', {
     // Enable dynamic Navbar
-    dynamicNavbar: true,
-	showToolbar: false
+    dynamicNavbar: false,
+	showToolbar: false,
+	uniqueHistoryIgnoreGetParameters: true,
+	preloadPreviousPage: true
 });
 
 try{
@@ -262,10 +269,13 @@ function requisitionlist(){
 }
 
 function requisitiondetaillist(obj){
-	
-	
+	var seqid = obj.title;
+	var action = obj.title;
+	if(seqid==null||seqid=="Edit"||seqid==""){
+		seqid = $$('.dataToBePassed')[0].id;
+	}
 	$$.ajax({
-		url: SERVER_ADDRESS + "/requisition?option=header&q="+obj.title,
+		url: SERVER_ADDRESS + "/requisition?option=header&q="+seqid,
 		contentType: 'jsonp',
 		method: 'POST',
 		type: 'POST',
@@ -283,13 +293,24 @@ function requisitiondetaillist(obj){
 				crossDomain: true,
 				success: function( response2 ) {
 										
-					mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
-					context:{
+					//mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
+					if(action=="Edit"){
+						mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,context:{
 						header: JSON.parse(response),
 						detail: JSON.parse(response2),
 						username: sessionStorage.getItem("username")
+						}
+						});
+					}else{
+						mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
+						context:{
+							header: JSON.parse(response),
+							detail: JSON.parse(response2),
+							username: sessionStorage.getItem("username")
+						}
+						});	
 					}
-					});
+					
 				},
 				failure: function(){
 					myApp.alert('Failed to load approval list detail', 'Error');
@@ -330,6 +351,124 @@ myApp.onPageInit('requisition', function (page) {
 					var found = [];
 					for (var i = 0; i < items.length; i++) {
 						if (items[i].TranID.trim().toLowerCase().indexOf(query) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
+						else{}
+					}
+					return found; //return array with mathced indexes
+				},
+				// List item Template7 template
+				template: '<li title={{SeqID}} class="item-content" onclick="requisitiondetaillist(this)">'+
+					'<div class="item-inner">'+
+						'<div class="item-media">'+
+							'<div class="item-title tranIDMaster">{{TranID}}</div>'+
+						'</div>'+
+						'<div class="item-title-row">'+
+							'<div class="vendorNameMaster">{{VendorName}}</div>'+
+						'</div>'+
+						'<div class="amountMaster">{{CurCode}} {{DocAmount}}</div>'+
+						'<div class="item-subtitle">{{TranDate}}</div>'+
+						'<div class="item-subtitle">{{Details}}</div>'+
+						'<!--<span class="badge">Vendor: {{VendorName}}</span>-->'+
+					'</div>'+
+				  '</li>',
+				  height: 150
+			});
+			//myApp.alert(virtualList.items,'Debug');
+			}catch(e){
+				//myApp.alert(e,'Debug');
+			}		
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+});
+
+$$(document).on('pageAfterAnimation', function (e) {
+	$$('.speed-dial-opened').removeClass('speed-dial-opened');	
+});
+
+myApp.onPageAfterAnimation('requisitiondetail', function (page) {
+	myApp.showIndicator();
+	var seqid = $$('.dataToBePassed')[0].id;
+	if(seqid==null||seqid=="Edit"||seqid==""){
+		seqid = $$('.dataToBePassed')[0].id;
+	}
+	//console.log(seqid +"Before Anim");
+	//console.log(action);
+	
+	$$.ajax({
+		url: SERVER_ADDRESS + "/requisition?option=header&q="+seqid,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			var rec = JSON.parse(response)[0];
+			console.log(rec);
+			$$.ajax({
+				url: SERVER_ADDRESS + "/requisition?option=detail&BatNbr="+rec.BatNbr,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					
+					
+						myApp.hideIndicator();				
+					//mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
+						mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
+						context:{
+							header: JSON.parse(response),
+							detail: JSON.parse(response2),
+							username: sessionStorage.getItem("username")
+						}
+						});	
+					
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+});
+
+
+myApp.onPageAfterAnimation('requisition', function (page) {
+	myApp.showIndicator();
+	
+	$$.ajax({
+		url: SERVER_ADDRESS + "/requisition?option=header",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			try{
+				myApp.hideIndicator();
+			}catch(e){
+				myApp.alert(e,'Debug');
+			}
+			
+			try{
+			var test = "requsition";	
+			var moduleList = test+"detaillist(this)"	
+			// Create virtual list
+			virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
+				// Pass array with items
+				items: JSON.parse(response),
+				// Custom search function for searchbar
+				searchAll: function (query, items) {
+					var found = [];
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].TranID.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
+						else if (items[i].TranDate.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
+						else if (items[i].Details.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
 						else{}
 					}
 					return found; //return array with mathced indexes
@@ -452,57 +591,17 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 						'</li>',
 						height: 150
 					});
+					virtualList.update();
 				},
 				failure: function(){
 					myApp.alert('Failed to load list detail', 'Error');
 			}});
-			
-			
-			
-			/*try{
-				var test = "requisition";	
-				var moduleList = test+"detaillist(this)"	
-				// Create virtual list
-				virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
-					// Pass array with items
-					items: JSON.parse(response),
-					// Custom search function for searchbar
-					searchAll: function (query, items) {
-						var found = [];
-						for (var i = 0; i < items.length; i++) {
-							if (items[i].TranID.trim().toLowerCase().indexOf(query) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
-							else if (items[i].Details.trim().toLowerCase().indexOf(query) >= 0){ found.push(i);}
-							else{}
-						}
-						return found; //return array with mathced indexes
-					},
-					// List item Template7 template
-					template: '<li title={{SeqID}} class="item-content dataToBePassed" onclick="'+moduleList+'">'+
-						'<div class="item-inner">'+
-							'<div class="item-media">'+
-								'<div class="item-title tranIDMaster">{{TranID}}</div>'+
-							'</div>'+
-							'<div class="item-title-row">'+
-							'</div>'+
-							'<div class="item-subtitle">{{TranDate}}</div>'+
-							'<div class="item-subtitle">{{RequiredDate}}</div>'+
-						'</div>'+
-					  '</li>',
-					  height: 150
-				});
-				//myApp.alert(virtualList.items,'Debug');
-				}catch(e){
-					//myApp.alert(e,'Debug');
-				}*/		
 			},
 			failure: function(){
 				myApp.alert('Failed to load list', 'Error');
 			}
 		});	
 	}else{
-		
-		
-		
 		$$.ajax({
 			url: SERVER_ADDRESS + "/trantypelist?module=requisition",
 			contentType: 'jsonp',
@@ -549,6 +648,8 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 			'</li>',
 			height: 150
 		});
+		
+		virtualList.update();
 	}
 });
 
@@ -724,19 +825,39 @@ function updateDetailList(){
 	}
 	
 }
+
+$$(document).on('click', function(e){
+  if (!$$(e.target).hasClass('floating-button')) {
+		//$$('.speed-dial-opened').removeClass('speed-dial-opened');	
+	}
+});
+
+/*$$(document).on.click(function() {
+   
+   
+   var clicked = $$(obj);
+	
+	if (clicked.hasClass('floating-button') && clicked.parent().hasClass('speed-dial')) {
+		clicked.parent().toggleClass('speed-dial-opened');
+	} else if(clicked.parent().hasClass('speed-dial-buttons')){
+		clicked.parent().parent().toggleClass('speed-dial-opened');
+	}else if (clicked.hasClass('close-speed-dial')) {
+		$$('.speed-dial-opened').removeClass('speed-dial-opened');
+	}else{
+		$$('.speed-dial-opened').removeClass('speed-dial-opened');
+	}
+});*/
 	
 function toggleactionbuttons(obj, action){
 	var clicked = $$(obj);
 	
 	if (clicked.hasClass('floating-button') && clicked.parent().hasClass('speed-dial')) {
 		clicked.parent().toggleClass('speed-dial-opened');
-	}
-	
-	if(clicked.parent().hasClass('speed-dial-buttons')){
+	} else if(clicked.parent().hasClass('speed-dial-buttons')){
 		clicked.parent().parent().toggleClass('speed-dial-opened');
-	}
-	
-	if (clicked.hasClass('close-speed-dial')) {
+	}else if (clicked.hasClass('close-speed-dial')) {
+		$$('.speed-dial-opened').removeClass('speed-dial-opened');
+	}else{
 		$$('.speed-dial-opened').removeClass('speed-dial-opened');
 	}
 	
@@ -833,6 +954,17 @@ function toggleactionbuttons(obj, action){
 						var rec = JSON.parse(response2);
 						if(rec.success){
 							myApp.alert('Sucessfully Updated!', '');
+							mainView.history.splice(mainView.history.length-1,mainView.history.length);
+							
+							$$('.view-main .page-on-left, .view-main .navbar-on-left').remove();
+							
+							mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html', ignoreCache:true, reload:true,
+								context:{
+									header: {formData},
+									detail: formData.data,
+									username: sessionStorage.getItem("username")
+								}
+							});
 						}else{
 							myApp.alert(rec.message, 'Error');
 						}
@@ -849,4 +981,588 @@ function toggleactionbuttons(obj, action){
 			}
 		}
 	}
+}
+
+
+/************************************************************************************************/
+
+function procurementlist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=procurement&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/procurement/procurement.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response)
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function procurementdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=procurement&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=procurement&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/procurement/procurementdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+function voucherlist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=voucher&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/voucher/voucher.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function voucherdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=voucher&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=voucher&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/voucher/voucherdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function paymentlist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=payment&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/payment/payment.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function paymentdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=payment&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=payment&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/payment/paymentdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function goodsreceiptlist(){
+	mainView.router.loadPage({url:'./modules/goodsreceipt/goodsreceipt.html', ignoreCache:true});
+}
+
+myApp.onPageAfterAnimation('procurement', function (page) {
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=procurement&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/procurement/procurement.html', ignoreCache:true,reload:true,
+				context:{
+					forapproval: JSON.parse(response)
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+});
+
+/* ===== Virtual List ===== */
+myApp.onPageInit('goodsreceipt', function (page) {
+	myApp.alert('goodsreceipt','Debug');
+ 	myApp.showIndicator();
+	
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=goodsreceipt&limitindex=0&limitcount=10000",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			try{
+				myApp.hideIndicator();
+			}catch(e){
+				myApp.alert(e,'Debug');
+			}
+			
+			try{
+			var test = "goodsreceipt";	
+			var moduleList = test+"detaillist(this)"	
+			// Create virtual list
+			virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
+				// Pass array with items
+				items: JSON.parse(response),
+				// Custom search function for searchbar
+				searchAll: function (query, items) {
+					var found = [];
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].TranID.trim().toLowerCase().indexOf(query) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
+						else if (items[i].VendorName.trim().toLowerCase().indexOf(query) >= 0){ found.push(i);}
+						else if (items[i].CurCode.trim().toLowerCase().indexOf(query) >= 0){ found.push(i);}
+						else if (items[i].DocAmount.trim().toLowerCase().indexOf(query) >= 0){ found.push(i);}
+						else if (items[i].Memo.trim().toLowerCase().indexOf(query) >= 0){ found.push(i);}
+						else{}
+					}
+					return found; //return array with mathced indexes
+				},
+				// List item Template7 template
+				template: '<li title={{SeqID}} class="item-content" onclick="'+moduleList+'">'+
+					'<div class="item-inner">'+
+						'<div class="item-media">'+
+							'<div class="item-title tranIDMaster">{{TranID}}</div>'+
+						'</div>'+
+						'<div class="item-title-row">'+
+							'<div class="vendorNameMaster">{{VendorName}}</div>'+
+						'</div>'+
+						'<div class="amountMaster">{{CurCode}} {{DocAmount}}</div>'+
+						'<div class="item-subtitle">{{TranDate}}</div>'+
+						'<div class="item-subtitle">{{Memo}}</div>'+
+						'<!--<span class="badge">Vendor: {{VendorName}}</span>-->'+
+					'</div>'+
+				  '</li>',
+				  height: 150
+			});
+			//myApp.alert(virtualList.items,'Debug');
+			}catch(e){
+				//myApp.alert(e,'Debug');
+			}		
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+});
+
+function goodsreceiptdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=goodsreceipt&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=goodsreceipt&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/goodsreceipt/goodsreceiptdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function journallist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=journal&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/journal/journal.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function journaldetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=journal&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=journal&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/journal/journaldetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function salesorderlist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=salesorder&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/salesorder/salesorder.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function salesorderdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=salesorder&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=salesorder&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/salesorder/salesorderdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function deliverylist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=delivery&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/delivery/delivery.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function deliverydetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=delivery&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=delivery&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/delivery/deliverydetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function saleslist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=sales&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/sales/sales.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function salesdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=sales&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=sales&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/sales/salesdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});	
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
+}
+
+function receiptlist(){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=receipt&limitindex=0&limitcount=100",
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			mainView.router.loadPage({url:'./modules/receipt/receipt.html', ignoreCache:true,
+				context:{
+					forapproval: JSON.parse(response),
+					username: sessionStorage.getItem("username")
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+	});
+}
+
+function receiptdetaillist(obj){
+	$$.ajax({
+		url: SERVER_ADDRESS + "/tranlist?module=receipt&limitindex=0&limitcount=100&SeqID="+obj.title,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			$$.ajax({
+				url: SERVER_ADDRESS + "/tranlist?module=receipt&option=detail&SeqID="+obj.title,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response2 ) {
+					mainView.router.loadPage({url:'./modules/receipt/receiptdetail.html', ignoreCache:true,
+					context:{
+						forapproval: JSON.parse(response),
+						forapprovaldetail: JSON.parse(response2),
+						username: sessionStorage.getItem("username")
+					}
+					});
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list detail', 'Error');
+			}});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list detail', 'Error');
+		}
+	});
 }
