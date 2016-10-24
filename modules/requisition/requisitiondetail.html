@@ -1,12 +1,12 @@
 <div class="pages">
-  <div data-page="forapprovaldetail" class="page navbar-fixed">
+  <div data-page="requisitiondetail" class="page navbar-fixed">
 	<!--<a href="#" class="floating-button color-pink">
 		<i class="icon fa fa-pencil"></i>
 	</a>-->
 	<div class="navbar">
 	  <div class="navbar-inner">
 		<div class="left sliding"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
-		<div class="center sliding">Requisition Detail</div>
+		<div class="center sliding">Requisition</div>
 		<div class="right"><a href="#" class="link icon-only open-panel" data-panel="right"><i class="icon fa fa-gear"></i></a></div>
 	  </div>
 	</div>
@@ -33,34 +33,39 @@
 		  <a href="#" title="Return To Maker" onclick="toggleactionbuttons(this,'Return To Maker')">
 			<i class="icon fa fa-mail-reply"></i>
 		  </a>
+		  <!-- First Speed Dial button -->
+		  <a href="#" title="Edit" onclick="requisitiondetaillist(this)">
+			<i class="icon fa fa-pencil"></i>
+		  </a>
 		</div>
 	  </div>
 	  <!-- End of Speed Dial -->
     <div class="page-content">
+	
       <div class="content-block">
         <div class="content-block-inner">
-		  {{#each forapproval}}	
+		  {{#each header}}	
           <h3>Ref No: {{TranID}}</h3>
           <ul>
 			<li id={{SeqID}} class="dataToBePassed"><b>Ref Date</b> - {{TranDate}}</li>
 			<!--<li><b>Vendor</b> - {{VendorName}}</li>-->
 			<!--<li><b>SLName</b> - {{SLName}}</li>-->
 			<li><b>Amount</b> - {{CurCode}} {{DocAmount}}</li>
-			<li><b>Particulars</b> - {{Memo}}</li>
-			<li><b>Status</b> - {{Status}}</li>
+			<li><b>Particulars</b> - {{Details}}</li>
+			<li><b>RequiredDate</b> - {{RequiredDate}}</li>
           </ul>
 		  {{/each}}
 		  <div class="list-block media-list" style="margin-top:0px;">
-		  {{#each forapprovaldetail}}	
+		  {{#each detail}}	
 		  <ul>
 			<li class="item-content">
 				<!--<div class="item-media">{{TranID}}</div>-->
 				<div class="item-inner">
-				  <div class="item-title"><b>{{ItemID}}</b></div>	
-				  <div class="item-subtitle"><b>{{ItemDescription}}</b></div>
-				  <div class="item-subtitle"><b>{{Qty}} {{Unit}}</b></div>
+				  <div class="item-title">{{ItemID}}</div>	
+				  <div class="item-subtitle">{{ItemDescription}}</div>
+				  <div class="item-subtitle">{{Qty}} {{Unit}}</div>
 				</div>
-				<div class="item-after">{{Unit}}</div>
+				<div class="item-after">{{UnitCost}}</div>
 			</li>
 		  </ul>
 		  {{/each}}
