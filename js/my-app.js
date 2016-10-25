@@ -341,7 +341,7 @@ myApp.onPageInit('requisition', function (page) {
 			
 			try{
 			var test = "requsition";	
-			var moduleList = test+"detaillist(this)"	
+			var moduleList = test+"detaillist(this)";	
 			// Create virtual list
 			virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
 				// Pass array with items
@@ -457,7 +457,7 @@ myApp.onPageAfterAnimation('requisition', function (page) {
 			
 			try{
 			var test = "requsition";	
-			var moduleList = test+"detaillist(this)"	
+			var moduleList = test+"detaillist(this)";	
 			// Create virtual list
 			virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
 				// Pass array with items
@@ -936,6 +936,7 @@ function toggleactionbuttons(obj, action){
 			var obj = $$('.floating-button')[0];
 			var Module = obj.title;
 			var formData = myApp.formToJSON('#masterForm');
+			//var formData2 = myApp('#masterForm'));
 			formData.data = virtualList.items;
 			
 			try{
@@ -950,7 +951,6 @@ function toggleactionbuttons(obj, action){
 					crossDomain: true,
 					data: JSON.stringify(formData),
 					success: function( response2 ) {
-						console.log(response2);
 						var rec = JSON.parse(response2);
 						if(rec.success){
 							myApp.alert('Sucessfully Updated!', '');
@@ -960,7 +960,9 @@ function toggleactionbuttons(obj, action){
 							
 							mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html', ignoreCache:true, reload:true,
 								context:{
-									header: {formData},
+									header: {
+										formData: formData
+									},
 									detail: formData.data,
 									username: sessionStorage.getItem("username")
 								}
@@ -1182,7 +1184,6 @@ myApp.onPageAfterAnimation('procurement', function (page) {
 
 /* ===== Virtual List ===== */
 myApp.onPageInit('goodsreceipt', function (page) {
-	myApp.alert('goodsreceipt','Debug');
  	myApp.showIndicator();
 	
 	$$.ajax({
@@ -1201,7 +1202,7 @@ myApp.onPageInit('goodsreceipt', function (page) {
 			
 			try{
 			var test = "goodsreceipt";	
-			var moduleList = test+"detaillist(this)"	
+			var moduleList = test+"detaillist(this)";	
 			// Create virtual list
 			virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
 				// Pass array with items
