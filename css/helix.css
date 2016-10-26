@@ -298,4 +298,8 @@ html:not(.watch-active-state) .speed-dial-buttons a:active,
 	vertical-align: top !important;
 	horizontal-align: top;
 }
+
+.smart-select-picker li.disabled{
+    display:none;
+}
 	

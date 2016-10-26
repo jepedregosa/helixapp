@@ -1,5 +1,5 @@
-//var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
-var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
+var SERVER_ADDRESS = "http://192.168.0.104:8080/helixapp";
+//var SERVER_ADDRESS = "http://116.93.120.29:8080/helixapp";
 var USERNAME;
 
 var TODAY = new Date();
@@ -107,6 +107,9 @@ var myApp = new Framework7({
     },
 	uniqueHistoryIgnoreGetParameters: true,
 	preloadPreviousPage: true
+	/*,
+	smartSelectBackOnSelect: true,
+	smartSelectOpenIn:'picker'*/
 });
 
 function validate(){
@@ -295,17 +298,47 @@ function requisitiondetaillist(obj){
 										
 					//mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
 					if(action=="Edit"){
+						var masterObj = JSON.parse(response);
+						masterObj[0].DocAmount = 0;
+						var detailList = JSON.parse(response2);
+						var nf = new Intl.NumberFormat();
+						
+						for(var z=0; z<detailList.length; z++){
+							detailList[z].Amount = parseFloat(parseFloat(detailList[z].Qty.trim().replace(',','')).toFixed(2) * parseFloat(detailList[z].UnitCost.trim().replace(',','')).toFixed(2)).toFixed(2);
+							masterObj[0].DocAmount = masterObj[0].DocAmount + detailList[z].Amount;
+							detailList[z].Amount = nf.format(detailList[z].Amount);
+						}
+						
+						masterObj[0].DocAmount = nf.format(masterObj[0].DocAmount);
+						
 						mainView.router.loadPage({url:'./modules/requisition/requisitioneditdetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,context:{
-						header: JSON.parse(response),
-						detail: JSON.parse(response2),
+						header: masterObj,
+						detail: detailList,
 						username: sessionStorage.getItem("username")
 						}
 						});
 					}else{
+						var masterObj = JSON.parse(response);
+						masterObj[0].DocAmount = 0;
+						var detailList = JSON.parse(response2);
+						
+						console.log(masterObj);
+						console.log(detailList);
+						
+						var nf = new Intl.NumberFormat();
+						
+						for(var z=0; z<detailList.length; z++){
+							detailList[z].Amount = parseFloat(detailList[z].Qty.trim().replace(',','') * detailList[z].UnitCost.trim().replace(',','')).toFixed(2);
+							masterObj[0].DocAmount = parseFloat(parseFloat(masterObj[0].DocAmount) + parseFloat(detailList[z].Amount)).toFixed(2);
+							detailList[z].Amount = nf.format(detailList[z].Amount);
+						}
+						
+						masterObj[0].DocAmount = nf.format(masterObj[0].DocAmount);								
+						
 						mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html?BatNbr=' + rec.BatNbr + '&SeqID=' + rec.SeqID, ignoreCache:true,
 						context:{
-							header: JSON.parse(response),
-							detail: JSON.parse(response2),
+							header: masterObj,
+							detail: detailList,
 							username: sessionStorage.getItem("username")
 						}
 						});	
@@ -370,7 +403,7 @@ myApp.onPageInit('requisition', function (page) {
 						'<!--<span class="badge">Vendor: {{VendorName}}</span>-->'+
 					'</div>'+
 				  '</li>',
-				  height: 150
+				  height: 105
 			});
 			//myApp.alert(virtualList.items,'Debug');
 			}catch(e){
@@ -387,7 +420,7 @@ $$(document).on('pageAfterAnimation', function (e) {
 	$$('.speed-dial-opened').removeClass('speed-dial-opened');	
 });
 
-myApp.onPageAfterAnimation('requisitiondetail', function (page) {
+/*myApp.onPageAfterAnimation('requisitiondetail', function (page) {
 	myApp.showIndicator();
 	var seqid = $$('.dataToBePassed')[0].id;
 	if(seqid==null||seqid=="Edit"||seqid==""){
@@ -435,7 +468,7 @@ myApp.onPageAfterAnimation('requisitiondetail', function (page) {
 			myApp.alert('Failed to load approval list detail', 'Error');
 		}
 	});
-});
+});*/
 
 
 myApp.onPageAfterAnimation('requisition', function (page) {
@@ -466,9 +499,9 @@ myApp.onPageAfterAnimation('requisition', function (page) {
 				searchAll: function (query, items) {
 					var found = [];
 					for (var i = 0; i < items.length; i++) {
-						if (items[i].TranID.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
-						else if (items[i].TranDate.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
-						else if (items[i].Details.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
+						if (items[i].TranID&&items[i].TranID.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0 || query.trim().toLowerCase() === ''){ found.push(i);}
+						else if (items[i].TranDate&&items[i].TranDate.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
+						else if (items[i].Details&&items[i].Details.trim().toLowerCase().indexOf(query.trim().toLowerCase()) >= 0){ found.push(i);}
 						else{}
 					}
 					return found; //return array with mathced indexes
@@ -488,7 +521,7 @@ myApp.onPageAfterAnimation('requisition', function (page) {
 						'<!--<span class="badge">Vendor: {{VendorName}}</span>-->'+
 					'</div>'+
 				  '</li>',
-				  height: 150
+				  height: 105
 			});
 			//myApp.alert(virtualList.items,'Debug');
 			}catch(e){
@@ -559,7 +592,8 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 			}
 			
 			console.log(JSON.parse(response)[0]);
-			myApp.formFromJSON('#masterForm', JSON.parse(response)[0]);
+			var masterObj = JSON.parse(response)[0];
+			masterObj.DocAmount = 0;
 			
 			$$.ajax({
 				url: SERVER_ADDRESS + "/requisition?option=detail&BatNbr="+page.query.BatNbr,
@@ -569,16 +603,27 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 				dataType : 'jsonp',
 				crossDomain: true,
 				success: function( response2 ) {
-										
+					var detailList = JSON.parse(response2);
+	
+					for(var z=0; z<detailList.length; z++){
+						detailList[z].Amount = parseFloat(detailList[z].Qty.trim().replace(',','')) * parseFloat(detailList[z].UnitCost.trim().replace(',','')).toFixed(2);
+						var nf = new Intl.NumberFormat();
+						detailList[z].Amount = nf.format(detailList[z].Amount);
+						/*masterObj.DocAmount = masterObj.DocAmount + parseFloat(detailList[z].Amount.trim().replace(',','')).toFixed(2);*/
+					}
+					
+					/*var nf1 = new Intl.NumberFormat();
+					masterObj.DocAmount = nf1.format(parseFloat(masterObj.DocAmount.trim().replace(',','')).toFixed(2));*/
+					
 					virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
-						items: JSON.parse(response2),
+						items: detailList,
 						// List item Template7 template
 						template: '<li class="swipeout">'+
 							'<div class="swipeout-content item-content">'+
 								'<div class="item-inner">'+
-								  '<div class="item-title"><b>{{ItemID}}</b></div>'+	
-								  '<div class="item-subtitle"><b>{{ItemDescription}}</b></div>'+
-								  '<div class="item-subtitle"><b>{{Qty}} {{Unit}} X {{UnitCost}}</b></div>'+
+								  '<div class="item-title">{{ItemID}}</div>'+	
+								  '<div class="item-subtitle">{{ItemDescription}}</div>'+
+								  '<div class="item-subtitle">{{Qty}} {{Unit}} X {{UnitCost}}</div>'+
 								  '<div class="item-subtitle" style="display: none;">{{LineSeqID}}</div>'+
 								  '<div class="item-subtitle" style="display: none;">{{SeqID}}</div>'+
 								'</div>'+
@@ -589,13 +634,19 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 								'<a href="#" onclick="removeDetailList(this,{{LineSeqID}});"><i class="icon icon-bin"></i></a>'+
 							'</div>'+
 						'</li>',
-						height: 150
+						height: 105
 					});
+					
+					
+					
 					virtualList.update();
 				},
 				failure: function(){
 					myApp.alert('Failed to load list detail', 'Error');
 			}});
+			
+				myApp.formFromJSON('#masterForm', masterObj);
+
 			},
 			failure: function(){
 				myApp.alert('Failed to load list', 'Error');
@@ -633,9 +684,9 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 			template: '<li class="swipeout">'+
 				'<div class="swipeout-content item-content">'+
 					'<div class="item-inner">'+
-					  '<div class="item-title"><b>{{ItemID}}</b></div>'+	
-					  '<div class="item-subtitle"><b>{{ItemDescription}}</b></div>'+
-					  '<div class="item-subtitle"><b>{{Qty}} {{Unit}} X {{UnitCost}}</b></div>'+
+					  '<div class="item-title">{{ItemID}}</div>'+	
+					  '<div class="item-subtitle">{{ItemDescription}}</div>'+
+					  '<div class="item-subtitle">{{Qty}} {{Unit}} X {{UnitCost}}</div>'+
 					  '<div class="item-subtitle" style="display: none;">{{LineSeqID}}</div>'+
 					  '<div class="item-subtitle" style="display: none;">{{SeqID}}</div>'+
 					'</div>'+
@@ -646,7 +697,7 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 					'<a href="#" onclick="removeDetailList(this,{{LineSeqID}});"><i class="icon icon-bin"></i></a>'+
 				'</div>'+
 			'</li>',
-			height: 150
+			height: 105
 		});
 		
 		virtualList.update();
@@ -654,68 +705,73 @@ myApp.onPageInit('requisitioneditdetail', function (page) {
 });
 
 function openPopupEditDetail(container,lineseqId){
-	
-	console.log('dito');
-	
 	//alert(container +" - "+ seqId);
-	//var myList = $$(container).find('.virtual-list');
-	var popuphtml = '<div class="popup"><center><h3>Item Detail Form</h3></center><div class="list-block">'+
-				'<form id="popup"><ul><li>'+
-				'<div class="item-content">'+
+	var popuphtml = '<div class="popup"><div class="view view-popup"><center><h3>Item Detail Form</h3></center><div class="list-block">'+
+				'<form id="popup"><ul><li style="display:none;">'+
+				'<div class="item-content" >'+
 					'<div class="item-inner">'+
 					  '<!--<div class="item-title label">Item ID</div>-->'+
 					  '<div class="item-input">'+
 						'<input type="text" name="ItemID" placeholder="Item ID">'+
 					  '</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content">'+
+				'</div></li>'+
+				'<li><a href="#" class="item-link smart-select" data-virtual-list="true" data-virtual-list-height="55" data-open-in="picker" data-searchbar="true" data-back-on-select="true" data-searchbar-placeholder="Search items">'+
+        '<select name="ItemID">'+
+        '</select>'+
+        '<div class="item-content" >'+
+          '<div class="item-inner">'+
+            '<div class="item-title">Item</div>'+
+			'<div class="item-after smart-select-value1" name="ItemDescription" ></div>'+
+          '</div>'+
+        '</div></a></li>'+
+				'<li style="display:none;"><div class="item-content" style="display:none;">'+
 					'<div class="item-inner">'+
 					  '<!--<div class="item-title label">Item Description</div>-->'+
 					  '<div class="item-input">'+
 						'<input type="text" name="ItemDescription" placeholder="Item Description">'+
 					  '</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content">'+
+				'</div></li>'+
+				'<li><div class="item-content">'+
 					'<div class="item-inner">'+
 						'<!--<div class="item-title label">Qty</div>-->'+
 						'<div class="item-input">'+
 							'<input type="text" name="Qty" placeholder="Quantity">'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content">'+
+				'</div></li>'+
+				'<li><div class="item-content">'+
 					'<div class="item-inner">'+
 						'<!--<div class="item-title label">Unit</div>-->'+
 						'<div class="item-input">'+
 							'<input type="text" name="Unit" placeholder="Unit">'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content">'+
+				'</div></li>'+
+				'<li><div class="item-content">'+
 					'<div class="item-inner">'+
 						'<!--<div class="item-title label">Unit Cost</div>-->'+
 						'<div class="item-input">'+
 							'<input type="text" name="UnitCost" placeholder="Unit Cost">'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content">'+
+				'</div></li>'+
+				'<li><div class="item-content">'+
 					'<div class="item-inner">'+
 						'<div class="item-input">'+
 							'<input type="date" name="DeliveryDate" placeholder="Delivery Date">'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content" style="display: none;">'+
+				'</div></li>'+
+				'<li style="display:none;"><div class="item-content" style="display: none;">'+
 					'<div class="item-inner">'+
 						'<div class="item-input">'+
 							'<input type="text" hidden name="SeqID" placeholder="SeqID">'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
-				'<div class="item-content" style="display: none;">'+
+				'</div></li>'+
+				'<li style="display:none;"><div class="item-content" style="display: none;">'+
 					'<div class="item-inner">'+
 						'<div class="item-input">'+
 							'<input type="text" name="LineSeqID" placeholder="LineSeqID">'+
@@ -727,10 +783,21 @@ function openPopupEditDetail(container,lineseqId){
 				  '<a href="#" class="button button-round close-popup" onclick="updateDetailList();">Save</a>'+
 				  '<a href="#" class="button button-round close-popup">Cancel</a>'+
 				'</p>'+
-				'</div>';
+				'</div></div>';
 	myApp.popup(popuphtml);
-	
-	
+		//var myList = $$(container).find('.virtual-list');
+	 //myApp.f7.addView('.view-popup');
+var popupView = myApp.addView('.view-popup', {
+    // Enable dynamic Navbar
+    //dynamicNavbar: false,
+	//showToolbar: false,
+	//uniqueHistoryIgnoreGetParameters: true,
+	//preloadPreviousPage: true
+});
+		
+	// Append option
+//myApp.smartSelectAddOption('.smart-select select', '<option value="apple">Apple</option>');
+
 	var rec;
 	
 	console.log(rec);
@@ -751,6 +818,9 @@ function openPopupEditDetail(container,lineseqId){
 	
 	if(rec){
 		myApp.formFromJSON('#popup', rec);
+		if(rec.ItemDescription){
+		$$('.smart-select-value1').text(rec.ItemDescription);	
+		}
 	}else{
 		var lineseqid =  virtualList.items.length + 1;
 		
@@ -762,6 +832,47 @@ function openPopupEditDetail(container,lineseqId){
 		myApp.formFromJSON('#popup', obj);
 		
 	}
+	
+	$$.ajax({
+			url: SERVER_ADDRESS + "/itemlookup",
+			contentType: 'jsonp',
+			method: 'POST',
+			type: 'POST',
+			dataType : 'jsonp',
+			crossDomain: true,
+			success: function( response ) {
+				var data = JSON.parse(response);
+				//if(data.data.length == 0){
+					if(rec==null){
+						myApp.smartSelectAddOption('.smart-select select', '<option value="" selected disabled style="display:none;"></option>');
+					}
+					
+					//alert(rec.ItemID);
+					for(var j=0;j<data.data.length; j++){
+						var rec1 = data.data[j];
+						if(rec&&rec.ItemID==rec1.ItemID){
+							//alert(rec1.ItemID);
+							var addMe = '<option value="'+rec1.ItemID+'" selected>'+rec1.ItemDescription+'</option>';
+						}else{
+							var addMe = '<option value="'+rec1.ItemID+'">'+rec1.ItemDescription+'</option>';	
+						}
+						
+						//alert(addMe);
+						myApp.smartSelectAddOption('.smart-select select', addMe);
+					}
+					//myApp.alert('No available transaction ID!', 'Error');
+				//}
+				/*else{
+					var rec = data.data[0];
+					var obj = new Object();
+					obj.TranID = rec.NextRefNbr;
+					obj.TranType = rec.JournalType;
+					obj.TranDate = TODAY;
+					obj.RequiredDate = TODAY;
+					myApp.formFromJSON('#masterForm', obj);
+				}*/
+			}
+		});
 	
 	
 	
@@ -799,10 +910,24 @@ function removeDetailList(vlist, lineseqid){
 
 function updateDetailList(){
 	
+	var selectedOpt = $$('select').val();
 	var formData = myApp.formToJSON($$('#popup')); 
+	formData.ItemDescription = $$('select').find('option[value="'+selectedOpt+'"]').text();
+	console.log(formData);
 	console.log(formData.LineSeqID);
 	var lineSeqId = formData.LineSeqID;
 	var found = false;
+	
+	var nf = new Intl.NumberFormat();
+	
+	
+	try{
+		formData.Amount = parseFloat(parseFloat(formData.Qty.trim().replace(',',''))*parseFloat(formData.UnitCost.trim().replace(',',''))).toFixed(2);
+		formData.Amount = nf.format(formData.Amount);		
+	}catch(e){
+		
+	}
+	
 	
 	for(var i=0; i<virtualList.items.length; i++){
 		var rec = virtualList.items[i];
@@ -953,11 +1078,31 @@ function toggleactionbuttons(obj, action){
 					success: function( response2 ) {
 						var rec = JSON.parse(response2);
 						if(rec.success){
-							myApp.alert('Sucessfully Updated!', '');
-							mainView.history.splice(mainView.history.length-1,mainView.history.length);
+							console.log(rec);
 							
-							$$('.view-main .page-on-left, .view-main .navbar-on-left').remove();
+							if(formData.SeqID){
+								myApp.alert('Sucessfully Updated!', 'Notice');
+								mainView.history.splice(mainView.history.length-1,mainView.history.length);
+								$$('.view-main .page-on-left, .view-main .navbar-on-left').remove();
+							}else{
+								myApp.alert('Sucessfully Created!', 'Notice');
+							}
 							
+							formData.BatNbr = rec.BatNbr;
+							formData.SeqID = rec.SeqID;
+							formData.DocAmount = 0;
+							
+							var nf = new Intl.NumberFormat();
+							
+							for(var z=0; z<formData.data.length; z++){
+								formData.data[z].Amount = parseFloat(parseFloat(formData.data[z].Qty.trim().replace(',','')) * parseFloat(formData.data[z].UnitCost.trim().replace(',',''))).toFixed(2);
+								formData.DocAmount = parseFloat(parseFloat(formData.DocAmount) + parseFloat(formData.data[z].Amount)).toFixed(2);
+								formData.data[z].Amount = nf.format(formData.data[z].Amount);
+							}
+							
+							formData.DocAmount = nf.format(formData.DocAmount);
+							console.log(formData);
+						
 							mainView.router.loadPage({url:'./modules/requisition/requisitiondetail.html', ignoreCache:true, reload:true,
 								context:{
 									header: {
@@ -982,9 +1127,55 @@ function toggleactionbuttons(obj, action){
 				myApp.alert(e, 'Dubug');
 			}
 		}
-	}
+		if(action=="Delete"){
+			var obj = $$('.dataToBePassed')[0];
+			var SeqID = obj.id;
+			myApp.showIndicator();
+			
+		$$.ajax({
+		url: SERVER_ADDRESS + "/requisition?option=header&q="+SeqID,
+		contentType: 'jsonp',
+		method: 'POST',
+		type: 'POST',
+		dataType : 'jsonp',
+		crossDomain: true,
+		success: function( response ) {
+			var rec = JSON.parse(response)[0];
+			console.log(rec);
+			$$.ajax({
+				url: SERVER_ADDRESS + "/requisition?option=delete&SeqID="+SeqID+"&BatNbr="+rec.BatNbr,
+				contentType: 'jsonp',
+				method: 'POST',
+				type: 'POST',
+				dataType : 'jsonp',
+				crossDomain: true,
+				success: function( response ) {
+					try{
+						myApp.hideIndicator();
+					}catch(e){
+						myApp.alert(e,'Debug');
+					}
+					myApp.alert('Successfully Deleted','Notice');
+					mainView.router.back();		
+				},
+				failure: function(){
+					myApp.alert('Failed to load approval list', 'Error');
+				}
+			});
+		},
+		failure: function(){
+			myApp.alert('Failed to load approval list', 'Error');
+		}
+			
+			
+		});	
+		}
+		
+		if(action=="Cancel"){
+			mainView.router.back();
+		}
+		}
 }
-
 
 /************************************************************************************************/
 

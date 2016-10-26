@@ -5453,13 +5453,14 @@
                 
             if (useSearchbar) {
                 searchbarPlaceholder = smartSelect.data('searchbar-placeholder') || 'Search';
-                searchbarCancel = smartSelect.data('searchbar-cancel') || 'Cancel';
+				searchbarCancel = '<i class="icon fa fa-remove"></i>';
+                /*searchbarCancel = smartSelect.data('searchbar-cancel') || 'Cancel';*/
             }
         
             var searchbarHTML =   '<form class="searchbar searchbar-init" data-search-list=".smart-select-list-' + id + '" data-search-in=".item-title">' +
                                     '<div class="searchbar-input">' +
                                         '<input type="search" placeholder="' + searchbarPlaceholder + '">' +
-                                        '<a href="#" class="searchbar-clear"></a>' +
+                                        '<!--<a href="#" class="searchbar-clear"></a>-->' +
                                     '</div>' +
                                     (material ? '' : '<a href="#" class="searchbar-cancel">' + searchbarCancel + '</a>') +
                                   '</form>' +
@@ -5546,7 +5547,8 @@
                         template: smartSelectItemTemplate,
                         height: virtualListHeight || undefined,
                         searchByItem: function (query, index, item) {
-                            if (item.text.toLowerCase().indexOf(query.trim().toLowerCase()) >=0 ) return true;
+                            if (item.text.toLowerCase().indexOf(query.trim().toLowerCase()) >=0 ){ return true;}
+							else if (item.value.toLowerCase().indexOf(query.trim().toLowerCase()) >=0 ){ return true;}
                             return false;
                         }
                     });

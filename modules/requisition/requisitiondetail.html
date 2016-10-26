@@ -37,6 +37,10 @@
 		  <a href="#" title="Edit" onclick="requisitiondetaillist(this)">
 			<i class="icon fa fa-pencil"></i>
 		  </a>
+		  <!-- First Speed Dial button -->
+		  <a href="#" title="Delete" onclick="toggleactionbuttons(this,'Delete')">
+			<i class="icon icon-bin"></i>
+		  </a>
 		</div>
 	  </div>
 	  <!-- End of Speed Dial -->
@@ -44,10 +48,11 @@
 	
       <div class="content-block">
         <div class="content-block-inner">
+		   <div class="list-block media-list" style="margin-top:0px;">	
 		  {{#each header}}	
           <h3>Ref No: {{TranID}}</h3>
           <ul>
-			<li id={{SeqID}} class="dataToBePassed"><b>Ref Date</b> - {{TranDate}}</li>
+			<li class="dataToBePassed" id={{SeqID}}><b>Ref Date</b> - {{TranDate}}</li>
 			<!--<li><b>Vendor</b> - {{VendorName}}</li>-->
 			<!--<li><b>SLName</b> - {{SLName}}</li>-->
 			<li><b>Amount</b> - {{CurCode}} {{DocAmount}}</li>
@@ -55,6 +60,7 @@
 			<li><b>RequiredDate</b> - {{RequiredDate}}</li>
           </ul>
 		  {{/each}}
+		  </div>
 		  <div class="list-block media-list" style="margin-top:0px;">
 		  {{#each detail}}	
 		  <ul>
@@ -63,9 +69,9 @@
 				<div class="item-inner">
 				  <div class="item-title">{{ItemID}}</div>	
 				  <div class="item-subtitle">{{ItemDescription}}</div>
-				  <div class="item-subtitle">{{Qty}} {{Unit}}</div>
+				  <div class="item-subtitle">{{Qty}} {{Unit}} X {{UnitCost}}</div>
 				</div>
-				<div class="item-after">{{UnitCost}}</div>
+				<div class="item-after">{{Amount}}</div>
 			</li>
 		  </ul>
 		  {{/each}}
