@@ -1,12 +1,12 @@
 <div class="pages">
-  <div data-page="voucherdetail" class="page navbar-fixed">
+  <div data-page="forapprovaldetail" class="page navbar-fixed">
 	<!--<a href="#" class="floating-button color-pink">
 		<i class="icon fa fa-pencil"></i>
 	</a>-->
 	<div class="navbar">
 	  <div class="navbar-inner">
 		<div class="left sliding"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
-		<div class="center sliding">Voucher Detail</div>
+		<div class="center sliding">Payment Detail</div>
 		<div class="right"><a href="#" class="link icon-only open-panel" data-panel="right"><i class="icon fa fa-gear"></i></a></div>
 	  </div>
 	</div>
@@ -42,8 +42,8 @@
 		  {{#each forapproval}}	
           <h3>Ref No: {{TranID}}</h3>
           <ul>
-			<li id={{BatNbr}} title="voucher" class="dataToBePassed"><b>Ref Date</b> - {{TranDate}}</li>
-			<li><b>Claimant</b> - {{VendorName}}</li>
+			<li id={{SeqID}} class="dataToBePassed"><b>Ref Date</b> - {{TranDate}}</li>
+			<li><b>Vendor</b> - {{VendorName}}</li>
 			<!--<li><b>SLName</b> - {{SLName}}</li>-->
 			<li><b>Amount</b> - {{CurCode}} {{DocAmount}}</li>
 			<li><b>Particulars</b> - {{Memo}}</li>

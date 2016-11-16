@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="css/my-app.css">
     <link rel="stylesheet" type="text/css" href="css/icomoon.css" />
     <link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+	<link rel="stylesheet" type="text/css" href="css/jquery.jqplot.min.css" />
+	
   </head>
   <body>
     <!-- Status bar overlay for fullscreen mode-->
@@ -53,9 +55,10 @@
             </div>-->
           </div>
         </div>
-            <div class="page-content">
-          <div class="content-block-title"><center><span style="font-size:2em; color:#000;">Helix Login</span></center></div>
-		  <form id="form-login" class="store-data">
+            <div class="page-content logincontent">
+		  <form id="form-login-pcso" class="store-data">
+			<span class="pcsologo"></span>
+			<!--<div style="position:relative; top:-40px;"><center><span style="font-size:2em; color:#fff;">Helix CAS</span></center>-->
 			<div class="list-block loginpage">
 			  <ul>
 				<li class="item-content">
@@ -63,7 +66,7 @@
 					<div class="item-inner">
 						<!--<div class="item-title label">Client Code</div>-->
 						<div class="item-input item-input-field">
-							<input type="text" name="clientid" class="form-control" placeholder="DB Server"/>
+							<input type="text" name="clientid" value="pcso_prod" class="form-control" placeholder="DB Server"/>
 						</div>
 					</div>
 				</li>
@@ -72,7 +75,7 @@
 				  <div class="item-inner form-group">
 					<!--<div class="item-title label">Company</div>-->
 					<div class="item-input item-input-field">
-					  <input type="text" name="companyid" class="form-control" placeholder="Company"/>
+					  <input type="text" name="companyid" value="pcso" class="form-control" placeholder="Company"/>
 					</div>
 				  </div>
 				</li>
@@ -81,7 +84,7 @@
 				  <div class="item-inner form-group"> 
 					<!--<div class="item-title label">Username</div>-->
 					<div class="item-input item-input-field">
-					  <input type="text" name="username" class="form-control" placeholder="Username"/>
+					  <input type="text" name="username" class="form-control" placeholder="Username" autocomplete="off"/>
 					</div>
 				  </div>
 				</li>
@@ -94,26 +97,16 @@
 					  </div>
 					</div>
 				</li>
-				<!--<li><a href="#" class="item-link smart-select" data-back-on-select="true" data-open-in="picker" data-searchbar="true">
-        <select name="car">
-        <option value="honda">Honda</option>
-            <option value="lexus">Lexus</option>
-            <option value="mazda">Mazda</option>
-            <option value="nissan">Nissan</option>
-            <option value="toyota">Toyota</option>
-        </select>
-        <div class="item-content">
-          <div class="item-inner">
-            <div class="item-title">Car</div>
-          </div>
-        </div></a></li>-->
 			  </ul>
 			</div>
 			<div class="list-block">
 			  <ul>
 				  <li><input type="button" id="login-submit" value="Sign In" onclick="validate()"/></li>
 			  </ul>
-			  <!--<div class="list-block-label">Some text about login information.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>-->
+			  <br/>
+			  <!--<center><a href="#" style="font-size: 12px; color: #fff;">Forgot Password?</a></center>
+			  <div class="list-block-label">Some text about login information.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>-->
+			</div>
 			</div>
 		  </form>
             </div>
@@ -123,7 +116,41 @@
     </div>
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="js/framework7.js"></script>
-    <!-- Path to your app js-->
+    <!-- Path to your app/modules js-->
     <script type="text/javascript" src="js/my-app.js"></script>
+	<script type="text/javascript" src="js/actionbuttons.js"></script>
+	<script type="text/javascript" src="js/charity.js"></script>
+	<script type="text/javascript" src="js/charityApp.js"></script>
+	<script type="text/javascript" src="js/dashboard.js"></script>
+	<!--<script type="text/javascript" src="js/delivery.js"></script>-->
+	<script type="text/javascript" src="js/goodsreceipt.js"></script>
+	<script type="text/javascript" src="js/goodsreceiptApp.js"></script>
+	<!--<script type="text/javascript" src="js/journal.js"></script>-->
+	<!--<script type="text/javascript" src="js/payment.js"></script>-->
+	<script type="text/javascript" src="js/prizeclaim.js"></script>
+	<script type="text/javascript" src="js/prizeclaimApp.js"></script>
+	<script type="text/javascript" src="js/procurement.js"></script>
+	<script type="text/javascript" src="js/procurementApp.js"></script>
+	<!--<script type="text/javascript" src="js/receipt.js"></script>-->
+	<script type="text/javascript" src="js/requestforpayment.js"></script>
+	<script type="text/javascript" src="js/requestforpaymentApp.js"></script>
+	<script type="text/javascript" src="js/requisition.js"></script>
+	<script type="text/javascript" src="js/requisitionApp.js"></script>
+	<!--<script type="text/javascript" src="js/sales.js"></script>-->
+	<!--<script type="text/javascript" src="js/salesorder.js"></script>-->
+	<script type="text/javascript" src="js/voucher.js"></script>
+	<script type="text/javascript" src="js/voucherApp.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
+    <!-- Path to your app plugins js-->
+	<script type="text/javascript" src="js/plugins/jqplot.barRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.categoryAxisRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.dateAxisRenderer.js"></script>	
+	<script type="text/javascript" src="js/plugins/jqplot.pieRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.enhancedPieLegendRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.logAxisRenderer.js"></script>	
+	<script type="text/javascript" src="js/plugins/jqplot.canvasTextRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.canvasAxisTickRenderer.js"></script>
   </body>
 </html>
